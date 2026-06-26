@@ -83,15 +83,21 @@
   <header>
     <p class="kicker">gentropic.org / security</p>
     <h1>GCU tools, built for locked-down environments</h1>
-    <p class="lede">Offline-safe, codegen-free, hash-verifiable. Free, forever. Built to pass a strict
-      security review — <strong>verifiably, not on our word.</strong></p>
-    <p class="self-note">This page is itself a hardened static artifact: no scripts, no network requests,
-      no third-party fonts or CDNs. It passes the capability declaration it describes. <strong>View source.</strong></p>
+    <p class="lede">The GCU builds small, single-file tools that run entirely in your browser — offline,
+      with no installer and no network access — and that are free and open-source. What sets them apart for
+      a review is that each of those properties is something you can confirm for yourself rather than take
+      on trust. This page describes what the tools do, what they ask of a host, and exactly how to check
+      every claim.</p>
+    <p class="self-note">This page is held to the same standard as the tools it describes. It is a single
+      static document with no scripts, no network requests, and no third-party fonts or content-delivery
+      networks — everything it loads is served from this one origin. If that is a claim worth checking, its
+      source is already open to you under <strong>View Source</strong>.</p>
   </header>
 
   <section>
     <h2>Verify it yourself — five minutes</h2>
-    <p class="tight">Don't trust this page. Check it.</p>
+    <p>You do not have to take any of the following on faith. Each property claimed on this page corresponds
+      to something you can confirm directly, in a few minutes, using tools you already have on the machine.</p>
     <ol class="verify">
       <li>Download <code>lamina.html</code> from the pinned release below.</li>
       <li>Hash it — <kbd>shasum -a 256 lamina.html</kbd> — it matches the published SHA-256 <em>and</em> the Zenodo DOI.</li>
@@ -120,11 +126,13 @@
 
   <section>
     <h2>lamina — capability declaration</h2>
-    <p>The pilot tool: open any file — even multi-gigabyte — and scroll, filter, and export it. Windowed,
-      read-only over the source, offline. Machine-readable:
-      <a href="artifacts/lamina/capability.json">capability.json</a> ·
-      <a href="artifacts/lamina/csp.txt">csp.txt</a> ·
-      <a href="artifacts/lamina/sbom.json">sbom.json</a></p>
+    <p>lamina is the first tool we publish with a hardened profile, and a sensible one to evaluate first. It
+      opens a file — even a multi-gigabyte one — and lets you scroll, filter, and export it: windowed and
+      read-only over the source, and running entirely offline. Its capability declaration is set out below,
+      and the machine-readable forms your own tooling can ingest are linked here —
+      <a href="artifacts/lamina/capability.json">capability.json</a>,
+      <a href="artifacts/lamina/csp.txt">csp.txt</a>, and
+      <a href="artifacts/lamina/sbom.json">sbom.json</a>.</p>
     <table>
       <tr><th>Executes</th><td>runtime codegen <span class="no">No</span> (no <code>eval</code> / <code>new Function</code>) · wasm <span class="no">No</span> · remote import <span class="no">No</span></td></tr>
       <tr><th>Reach</th><td>network <span class="no">None</span> (<code>connect-src 'none'</code>) · telemetry <span class="no">None</span></td></tr>
@@ -135,9 +143,11 @@
 
   <section>
     <h2>Is this the reviewed thing, unchanged?</h2>
-    <p>A single chain of identity and integrity — repository (org-owned, full history) &rarr; signed, tagged
-      release &rarr; SHA-256 &rarr; <strong>Zenodo DOI</strong> (frozen, citable, CERN-hosted). The thing you
-      reviewed = the thing running = this hash = this DOI.</p>
+    <p>Integrity rests on a single, checkable chain from source to running file: an organisation-owned
+      repository with full history, a signed and tagged release, the SHA-256 of the built artifact, and a
+      <strong>Zenodo DOI</strong> that freezes that exact version as a citable, CERN-hosted record. Taken
+      together, they let you establish that the file you reviewed, the file that is running, and the file
+      bearing this hash are one and the same.</p>
     <table>
       <tr><th>Release</th><td class="ph">&lt;tag — build-emitted&gt;</td></tr>
       <tr><th>SHA-256</th><td class="ph">&lt;hash — build-emitted&gt;</td></tr>
@@ -181,14 +191,20 @@
 
   <section>
     <h2>What this is <em>not</em></h2>
-    <p class="tight"><strong>Not "certified safe."</strong> We don't sell a badge. Your security team owns the
-      risk-acceptance decision; we give you what you need to make it.</p>
-    <p class="tight"><strong>Not installed-software cosplay.</strong> However it is packaged, a shortcut opens
-      HTML in your browser under your CSP — packaging changes <em>discovery</em>, not what runs or where.</p>
-    <p class="tight"><strong>Not a support contract.</strong> It is public OSS; you run your own pinned copy.
-      Authorship is disclosed, not hidden — where a deployment's author is also an employee, that is a
-      conflict of interest to surface up front, and a reason the deploying organisation, not the author, owns
-      the call.</p>
+    <p>It is <strong>not "certified safe."</strong> We do not sell a safety badge, and a flat assurance of
+      safety is not something a credible assessment produces — only a scoped set of findings against a
+      defined scope. The decision to accept the residual risk belongs to your organisation, not to us and
+      not to any report we might commission. What we can offer is everything you need to make that decision
+      well.</p>
+    <p>It is <strong>not installed software in a costume.</strong> However an artifact is packaged — as a
+      bare file, a shortcut, or an installer — what ultimately runs is HTML in your managed browser, under
+      your content-security policy. Packaging changes how the tool is discovered and inventoried; it does
+      not change what executes, or where.</p>
+    <p>It is <strong>not a support contract, and its authorship is disclosed rather than hidden.</strong> The
+      tools are public open-source software: you run your own pinned copy, with no operator and no ongoing
+      dependency on us. Where the person proposing a deployment is also an employee of the organisation, that
+      is a conflict of interest to state plainly — and a reason the deploying organisation, rather than the
+      author, should own the decision.</p>
   </section>
 
   <footer>
