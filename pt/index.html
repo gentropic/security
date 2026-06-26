@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<!--
+  gentropic.org/security — ala de segurança da GCU (pt-BR).
+  Deliberadamente austera: switchboard apenas CLARO, estática, SEM scripts, SEM requisições de rede,
+  fontes embutidas na mesma origem (sem CDN). Esta página é, ela mesma, um artefato estático endurecido —
+  cumpre a declaração de capacidades que descreve. Exiba o código-fonte; é esse o ponto.
+-->
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GCU · Segurança</title>
+  <meta name="description" content="Ferramentas da GCU para ambientes restritos — seguras offline, sem geração de código, verificáveis por hash. Verificáveis, não sob nossa palavra.">
+  <link rel="icon" type="image/svg+xml" href="../gcu-favicon-32.svg">
+  <style>
+    @font-face { font-family:'Barlow'; font-weight:400; font-display:swap; src:url('../fonts/barlow-400.woff2') format('woff2'); }
+    @font-face { font-family:'Barlow'; font-weight:600; font-display:swap; src:url('../fonts/barlow-600.woff2') format('woff2'); }
+    @font-face { font-family:'Barlow'; font-weight:700; font-display:swap; src:url('../fonts/barlow-700.woff2') format('woff2'); }
+    @font-face { font-family:'Space Mono'; font-weight:400; font-style:normal; font-display:swap; src:url('../fonts/space-mono-400.woff2') format('woff2'); }
+    @font-face { font-family:'Space Mono'; font-weight:700; font-style:normal; font-display:swap; src:url('../fonts/space-mono-700.woff2') format('woff2'); }
+
+    :root {
+      --sw-bg:#D2D1CE; --sw-bg-raised:#E4E3E1; --sw-bg-bright:#EDECEB;
+      --sw-text:#232322; --sw-text-mid:#504F4C; --sw-text-soft:#5A5856;
+      --sw-border:#B3B1AD; --sw-rule:#A5A3A0; --sw-orange:#8B3F00; --sw-green:#00602B; --sw-red:#99191E;
+      --sw-mono:'Space Mono','Consolas',monospace; --sw-sans:'Barlow',system-ui,sans-serif;
+      --au-surface:var(--sw-bg); --au-surface-raised:var(--sw-bg-raised); --au-surface-bright:var(--sw-bg-bright);
+      --au-fg:var(--sw-text); --au-fg-muted:var(--sw-text-mid); --au-fg-soft:var(--sw-text-soft);
+      --au-border:var(--sw-border); --au-rule:var(--sw-rule);
+      --au-action:var(--sw-orange); --au-success:var(--sw-green); --au-warn:var(--sw-red);
+      --au-mono:var(--sw-mono); --au-sans:var(--sw-sans);
+    }
+    *{ margin:0; padding:0; box-sizing:border-box; }
+    body{ background:var(--au-surface); color:var(--au-fg); font-family:var(--au-sans); font-size:15px; line-height:1.6; -webkit-font-smoothing:antialiased; }
+    main{ max-width:760px; margin:0 auto; padding:3.5rem 1.5rem 2rem; }
+    .kicker{ font-family:var(--au-mono); font-size:0.72rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--au-fg-soft); }
+    .lang{ font-family:var(--au-mono); font-size:0.72rem; letter-spacing:0.06em; text-align:right; color:var(--au-fg-soft); margin-bottom:0.4rem; }
+    .lang a{ color:var(--au-fg-soft); }
+    h1{ font-weight:700; font-size:2rem; line-height:1.15; letter-spacing:-0.015em; margin:0.5rem 0; }
+    .lede{ color:var(--au-fg-muted); font-size:1.08rem; margin-bottom:1.2rem; }
+    .self-note{ font-family:var(--au-mono); font-size:0.78rem; color:var(--au-fg-soft); border:1px solid var(--au-border); border-left:3px solid var(--au-success); padding:0.7rem 0.9rem; border-radius:3px; }
+    section{ margin-top:2.8rem; }
+    h2{ font-weight:700; font-size:1.25rem; letter-spacing:-0.01em; margin-bottom:0.6rem; padding-bottom:0.4rem; border-bottom:1px solid var(--au-rule); }
+    p{ margin-bottom:0.7rem; }
+    a{ color:var(--au-action); text-decoration:underline; text-underline-offset:2px; }
+    code,kbd{ font-family:var(--au-mono); font-size:0.86em; background:var(--au-surface-bright); border:1px solid var(--au-border); border-radius:3px; padding:0.05em 0.35em; }
+    strong{ font-weight:600; }
+    .yes{ color:var(--au-success); font-weight:600; } .no{ color:var(--au-warn); font-weight:600; }
+    ol.verify{ counter-reset:v; list-style:none; }
+    ol.verify li{ counter-increment:v; position:relative; padding:0.5rem 0 0.5rem 2.2rem; border-bottom:1px solid var(--au-border); font-family:var(--au-mono); font-size:0.84rem; line-height:1.5; }
+    ol.verify li::before{ content:counter(v); position:absolute; left:0; top:0.5rem; width:1.5rem; height:1.5rem; background:var(--au-fg); color:var(--au-surface-bright); border-radius:3px; text-align:center; line-height:1.5rem; font-size:0.8rem; }
+    table{ width:100%; border-collapse:collapse; margin:0.6rem 0; font-size:0.88rem; }
+    th,td{ text-align:left; vertical-align:top; padding:0.5rem 0.6rem; border:1px solid var(--au-border); }
+    th{ background:var(--au-surface-raised); font-family:var(--au-mono); font-size:0.72rem; letter-spacing:0.06em; text-transform:uppercase; color:var(--au-fg-muted); }
+    td code{ background:none; border:none; padding:0; }
+    dl.faq dt{ font-weight:600; margin-top:0.9rem; }
+    dl.faq dd{ color:var(--au-fg-muted); }
+    .files{ font-family:var(--au-mono); font-size:0.85rem; }
+    .files li{ list-style:none; padding:0.25rem 0; border-bottom:1px solid var(--au-border); }
+    .ph{ color:var(--au-fg-soft); font-style:italic; }
+    footer{ margin-top:3rem; padding-top:1.2rem; border-top:1px solid var(--au-rule); font-family:var(--au-mono); font-size:0.74rem; color:var(--au-fg-soft); }
+  </style>
+</head>
+<body>
+<main>
+
+  <p class="lang"><a href="../">English</a> &middot; Português</p>
+
+  <header>
+    <p class="kicker">gentropic.org / security</p>
+    <h1>Ferramentas que não exigem nada da máquina onde rodam</h1>
+    <p class="lede">A GCU desenvolve ferramentas pequenas, de arquivo único, que não precisam de instalador,
+      de rede nem de permissões especiais para rodar — e que permitem que você verifique cada uma dessas
+      afirmações por conta própria, em vez de aceitá-las sob confiança. São livres e de código aberto, e
+      funcionam onde a maioria dos softwares não chega, por razões que você pode checar. Esta página descreve
+      o que as ferramentas fazem, o que pedem do host e exatamente como confirmar cada afirmação.</p>
+    <p class="self-note">Esta página é submetida ao mesmo padrão das ferramentas que descreve: é um único
+      documento estático, sem scripts, sem requisições de rede e sem fontes ou CDNs de terceiros — tudo o que
+      ela carrega é servido desta mesma origem. Se essa é uma afirmação que vale a pena checar, o código-fonte
+      já está aberto para você em <strong>Exibir código-fonte</strong>.</p>
+  </header>
+
+  <section>
+    <h2>Verifique você mesmo — cinco minutos</h2>
+    <p>Você não precisa aceitar nada disto sob confiança. Cada propriedade afirmada nesta página corresponde
+      a algo que você pode confirmar diretamente, em poucos minutos, com ferramentas que já tem na máquina.</p>
+    <ol class="verify">
+      <li>Baixe o <code>lamina.html</code> da versão fixada (release) indicada abaixo.</li>
+      <li>Calcule o hash — <kbd>shasum -a 256 lamina.html</kbd> — ele confere com o SHA-256 publicado <em>e</em> com o DOI do Zenodo.</li>
+      <li>Abra o arquivo. DevTools &rarr; Rede &rarr; carregue um arquivo &rarr; <strong>zero requisições.</strong></li>
+      <li>Exiba o código-fonte — ele é legível; aqui está o repositório a partir do qual é construído.</li>
+      <li>Desconecte a rede por completo. Continua funcionando.</li>
+      <li>Exporte algo — ele grava <strong>apenas o único arquivo que você escolher</strong>, pela caixa de diálogo Salvar do sistema operacional. Nada silencioso; em lugar nenhum que você não tenha escolhido.</li>
+    </ol>
+  </section>
+
+  <section>
+    <h2>O que um host restrito controla — e o que sobrevive</h2>
+    <p>Ambientes sérios deixaram de policiar a <em>computação</em> (o navegador é o runtime mais capaz de
+      qualquer máquina gerenciada, e não pode ser removido sem quebrar os aplicativos web dos quais a
+      organização depende) e passaram a policiar o <strong>alcance</strong>. Veja exatamente o que cada
+      controle bloqueia, e a resposta do perfil endurecido:</p>
+    <table>
+      <tr><th>Controle do host</th><th>Bloqueia</th><th>Perfil endurecido</th></tr>
+      <tr><td><code>unsafe-eval</code> (CSP)</td><td><code>eval</code> / <code>new&nbsp;Function</code></td><td><span class="yes">Zero geração de código em runtime</span> — backend de closures, nunca eval</td></tr>
+      <tr><td><code>wasm-unsafe-eval</code></td><td>compilação de WASM</td><td>Removido (ou habilitável por admin)</td></tr>
+      <tr><td><code>import()</code> remoto</td><td>código remoto</td><td>Apenas imports empacotados / locais</td></tr>
+      <tr><td>Trusted Types</td><td>construção de Function</td><td><span class="yes">Igual — sem geração de código</span></td></tr>
+      <tr><td>origem segura</td><td><code>crypto.subtle</code>, workers, armazenamento</td><td>Servida de uma origem HTTPS interna / loopback</td></tr>
+      <tr><td><code>connect-src 'none'</code></td><td>saída de rede</td><td><span class="yes">Alcance zero por construção</span> — o isolamento da rede é o recurso</td></tr>
+    </table>
+  </section>
+
+  <section>
+    <h2>Perfis</h2>
+    <p>Cada ferramenta declara o perfil mais estrito que cumpre. O perfil é definido pelos dois eixos que um
+      revisor pondera primeiro — se a ferramenta gera código em tempo de execução, e se acessa a rede.
+      <em>(Os nomes dos perfis são canônicos, em inglês, como as chaves do <code>capability.json</code>.)</em></p>
+    <table>
+      <tr><th>Perfil</th><th>Geração de código (runtime)</th><th>Rede / alcance</th></tr>
+      <tr><td><strong>Sealed</strong></td><td><span class="no">Nenhuma</span></td><td><span class="no">Nenhum</span> — sobrevive à CSP mais estrita e ao Trusted Types; isolado da rede, e de forma demonstrável (desconecte e rode)</td></tr>
+      <tr><td><strong>Connected</strong></td><td><span class="no">Nenhuma</span></td><td>Um conjunto declarado de endpoints — sem geração de código, mas não isolado da rede</td></tr>
+      <tr><td><strong>Full</strong></td><td>usa <code>eval</code> / <code>Function</code></td><td>A versão de potência total, para ambientes que permitem geração de código em runtime</td></tr>
+    </table>
+    <p>Duas capacidades são declaradas de forma <em>ortogonal</em>, como flags sobre o perfil, porque não
+      alteram nem a história de geração de código nem a de rede:</p>
+    <table>
+      <tr><th>+WASM</th><td>Usa WebAssembly (precisa de <code>wasm-unsafe-eval</code>) para computação pesada.</td></tr>
+      <tr><th>+GPU</th><td>Usa WebGL / WebGPU. <strong>Não é governado pela CSP</strong> — os shaders são compilados pelo driver da GPU, não por <code>eval</code>, então isto não quebra um perfil Sealed. Pode ser desativado por política do navegador, e adiciona superfície de ataque do processo de GPU (mitigada pelo sandbox de GPU do navegador).</td></tr>
+    </table>
+    <p>Uma origem segura <em>servida</em> (um site HTTPS interno, ou um servidor em loopback) só é exigida por
+      ferramentas que usam <strong>service workers</strong> para cache offline, ou que dependem de
+      <strong><code>crypto.subtle</code></strong> para autoverificação por hash — ambos pouco confiáveis a
+      partir de uma origem <code>file://</code>. Todo o resto, incluindo uma ferramenta Sealed&nbsp;+GPU, roda
+      como um arquivo único aberto a partir do disco. (Uma página <code>file://</code> <em>é</em> um contexto
+      seguro; é a sua origem opaca, não o gate de contexto seguro, que limita aqueles dois recursos.)</p>
+  </section>
+
+  <section>
+    <h2>Como cada garantia é estabelecida</h2>
+    <p>Nem toda propriedade nesta página é sustentada da mesma forma, e a diferença é o ponto central. Cada
+      afirmação é estabelecida de uma destas maneiras — da mais forte para a mais fraca — e a declaração de
+      cada ferramenta marca qual:</p>
+    <table>
+      <tr><th>Imposta pelo host</th><td>A própria política do navegador a torna <em>impossível</em>, não apenas ausente — "sem geração de código" sob um <code>script-src</code> sem <code>unsafe-eval</code>; "sem rede" sob <code>connect-src 'none'</code>. Uma versão falha não consegue violar um limite imposto pelo host. É o tipo mais forte, e está genuinamente disponível aqui.</td></tr>
+      <tr><th>Demonstrável</th><td>Você pode observá-la diretamente — desconecte a rede e a ferramenta continua funcionando.</td></tr>
+      <tr><th>Inspecionável</th><td>Você pode lê-la no código-fonte, e o hash publicado confirma que o código-fonte é o que roda — por exemplo, "lê apenas os arquivos que você abre".</td></tr>
+      <tr><th>Melhor esforço</th><td>Pretendida e acreditada, mas nem imposta pelo host nem diretamente testável. Onde uma propriedade se apoia apenas nisto, a declaração diz isso claramente.</td></tr>
+    </table>
+  </section>
+
+  <section>
+    <h2>lamina — declaração de capacidades</h2>
+    <p>o lamina é a primeira ferramenta que publicamos, e uma escolha sensata para avaliar primeiro: ela
+      cumpre o perfil mais estrito, <strong>Sealed</strong>. Ela abre um arquivo — mesmo de vários gigabytes —
+      e permite percorrê-lo, filtrá-lo e exportá-lo: em janela e somente-leitura sobre a origem, e rodando
+      inteiramente offline. Sua declaração de capacidades está exposta abaixo, e as formas legíveis por máquina
+      que suas próprias ferramentas podem consumir estão linkadas aqui —
+      <a href="../artifacts/lamina/capability.json">capability.json</a>,
+      <a href="../artifacts/lamina/csp.txt">csp.txt</a> e
+      <a href="../artifacts/lamina/sbom.json">sbom.json</a>.</p>
+    <table>
+      <tr><th>Perfil</th><td><strong>Sealed</strong> — sem geração de código em runtime, sem rede, sem WASM, sem GPU</td></tr>
+      <tr><th>Executa</th><td>geração de código em runtime <span class="no">Não</span> (sem <code>eval</code> / <code>new Function</code>) · wasm <span class="no">Não</span> · import remoto <span class="no">Não</span></td></tr>
+      <tr><th>Alcance</th><td>rede <span class="no">Nenhum</span> (<code>connect-src 'none'</code>) · telemetria <span class="no">Nenhuma</span></td></tr>
+      <tr><th>Arquivos</th><td>leitura — <strong>apenas arquivos que você abre</strong> (seletor / arrastar-e-soltar) · escrita — <strong>apenas exportação iniciada por você, para um caminho que você escolhe na caixa Salvar do SO</strong> · E/S silenciosa ou arbitrária <span class="no">Nenhuma</span></td></tr>
+      <tr><th>Exige&nbsp;do&nbsp;host</th><td>origem segura <span class="yes">Sim</span> · admin <span class="no">Não</span> · instalação <span class="no">Não</span></td></tr>
+    </table>
+  </section>
+
+  <section>
+    <h2>Isto é a mesma coisa que foi revisada, inalterada?</h2>
+    <p>A integridade se apoia numa única cadeia verificável, da origem ao arquivo em execução: um repositório
+      de propriedade da organização com histórico completo, uma release assinada e com tag, o SHA-256 do
+      artefato construído, e um <strong>DOI do Zenodo</strong> que congela aquela versão exata como um registro
+      citável e hospedado pelo CERN. Em conjunto, eles permitem estabelecer que o arquivo que você revisou, o
+      arquivo em execução e o arquivo com este hash são um e o mesmo.</p>
+    <table>
+      <tr><th>Release</th><td class="ph">&lt;tag — emitida pelo build&gt;</td></tr>
+      <tr><th>SHA-256</th><td class="ph">&lt;hash — emitido pelo build&gt;</td></tr>
+      <tr><th>DOI do Zenodo</th><td class="ph">&lt;doi — na primeira release congelada&gt;</td></tr>
+      <tr><th>Origem</th><td><a href="https://github.com/gentropic/auditable">github.com/gentropic/auditable</a> (<code>ext/lamina</code> + <code>tools/lamina</code>)</td></tr>
+    </table>
+  </section>
+
+  <section>
+    <h2>As duas perguntas que um revisor faz</h2>
+    <p>Uma vez que você deixa de confiar nas extensões de arquivo como indicador de capacidade, restam dois
+      modelos coerentes de governança — e um artefato da GCU responde a ambos, por construção:</p>
+    <table>
+      <tr><th>Governar a fronteira</th><td>presuma computação arbitrária, controle o alcance &rarr; <span class="yes">isolado da rede</span>, <code>connect-src 'none'</code>, alcance voluntariamente zero — <em>e demonstrável: puxe o cabo.</em></td></tr>
+      <tr><th>Governar a procedência</th><td>identidade + integridade &rarr; <span class="yes">fixado por hash</span>, congelado, auditável sob CC0 — "isto é a coisa revisada, inalterada".</td></tr>
+    </table>
+  </section>
+
+  <section>
+    <h2>Arquivos para suas ferramentas</h2>
+    <ul class="files">
+      <li><a href="../artifacts/lamina/capability.json">capability.json</a> — declaração de capacidades legível por máquina</li>
+      <li><a href="../artifacts/lamina/csp.txt">csp.txt</a> — a CSP exata sob a qual o artefato é construído para rodar</li>
+      <li><a href="../artifacts/lamina/sbom.json">sbom.json</a> — SBOM em CycloneDX (zero dependências em runtime, no formato que seu scanner consome)</li>
+      <li><a href="../.well-known/security.txt">.well-known/security.txt</a> — contato + política conforme a RFC 9116</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Perguntas frequentes do revisor</h2>
+    <dl class="faq">
+      <dt>Ela se comunica de volta com algum servidor?</dt><dd>Não. <code>connect-src 'none'</code>; zero requisições de rede; puxe o cabo e verifique.</dd>
+      <dt>Precisa de admin ou de um instalador?</dt><dd>Não. É um documento web aberto no seu navegador gerenciado, sob a sua CSP.</dd>
+      <dt>Ela pode ler arquivos arbitrários?</dt><dd>Não. Apenas os arquivos que você abrir explicitamente; ela não pode navegar pelo disco.</dd>
+      <dt>Telemetria / análise?</dt><dd>Nenhuma. Não há caminho de rede pelo qual sair.</dd>
+      <dt>Como são tratadas atualizações e CVEs?</dt><dd>Você fixa uma release nomeada e atualiza quando <em>você</em> decidir, fixando uma nova. Zero dependências em runtime significa uma superfície de CVE quase nula.</dd>
+      <dt>Podemos hospedar nossa própria cópia?</dt><dd>Sim — essa é a forma de implantação pretendida. Você mantém uma cópia fixada; nós não operamos nada; desinstalar = apagar o arquivo.</dd>
+      <dt>E se o autor desaparecer?</dt><dd>Nada quebra. É software livre e de código aberto (CC0 / MIT); sua cópia não tem operador nem dependência de nós.</dd>
+    </dl>
+  </section>
+
+  <section>
+    <h2>O que isto <em>não</em> é</h2>
+    <p>Não é <strong>"certificado como seguro".</strong> Nós não vendemos um selo de segurança, e
+      desconfiaríamos de quem vendesse. Uma revisão de segurança é uma avaliação com escopo definido, e a
+      decisão de aceitar o risco residual pertence à sua organização — não a nós, e não a um relatório que nós
+      tenhamos encomendado. O que podemos oferecer é tudo de que você precisa para tomar essa decisão bem.</p>
+    <p>Não é <strong>software instalado fantasiado.</strong> Independentemente de como um artefato é
+      empacotado — como arquivo, atalho ou instalador — o que de fato roda é HTML no seu navegador gerenciado,
+      sob a sua política de segurança de conteúdo. O empacotamento muda como a ferramenta é descoberta e
+      inventariada; não muda o que executa, nem onde.</p>
+    <p>Não é <strong>um contrato de suporte, e sua autoria é divulgada, não escondida.</strong> As ferramentas
+      são software livre e de código aberto: você roda sua própria cópia fixada, sem operador e sem dependência
+      contínua de nós. Quando a pessoa que propõe uma implantação também é funcionária da organização, isso é
+      um conflito de interesse a declarar claramente — e uma razão para que a organização que implanta, e não o
+      autor, seja dona da decisão.</p>
+  </section>
+
+  <section>
+    <h2>Usar uma ferramenta da GCU no seu trabalho</h2>
+    <p>Se você chegou a esta página porque gostaria de usar uma destas ferramentas na sua organização, a coisa
+      mais útil que você pode fazer é também a mais sem graça: leve-a pelo seu fluxo normal de aprovação, em vez
+      de rodá-la sem avisar. Rodar um bom software por fora ainda deixa um software não revisado num sistema
+      gerenciado — e coloca você, e não a ferramenta, na posição incômoda quando alguém perguntar o que é aquilo
+      e quem autorizou.</p>
+    <p>Esta página existe para tornar essa aprovação simples. Direcione quem aprova — sua equipe de TI ou de
+      segurança — para ela; entregue a eles a declaração de capacidades e os demais artefatos acima; e
+      apresente-a pelo que ela é: uma ferramenta bem delimitada e verificável, levada pelo processo adequado. O
+      precedente que isso abre — uma categoria revisável que sua organização já viu e aceitou — é tão importante
+      quanto a própria ferramenta.</p>
+  </section>
+
+  <footer>
+    Contato e política: <a href="../.well-known/security.txt">security.txt</a> ·
+    Código-fonte desta página: <a href="https://github.com/gentropic/security">github.com/gentropic/security</a> ·
+    Computatro et Malleo.
+  </footer>
+
+</main>
+</body>
+</html>
