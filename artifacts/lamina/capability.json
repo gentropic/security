@@ -1,0 +1,30 @@
+{
+  "tool": "lamina",
+  "summary": "Open any file — even multi-gigabyte — and scroll / filter / export it. Windowed, read-only over the source, offline.",
+  "profile": "hardened",
+  "version": "<release tag — build-emitted>",
+  "sha256": "<build-emitted>",
+  "doi": "<zenodo — on first frozen release>",
+  "executes": {
+    "runtime_codegen": false,
+    "wasm": false,
+    "remote_import": false
+  },
+  "reach": {
+    "network": "none",
+    "telemetry": false
+  },
+  "filesystem": {
+    "reads": "user-opened files only (picker / drag-drop)",
+    "writes": "user-initiated export only, to a user-chosen path (OS Save dialog)",
+    "silent_or_arbitrary_io": false
+  },
+  "host_needs": {
+    "secure_origin": true,
+    "admin": false,
+    "install": false,
+    "csp": "default-src 'self'; script-src 'self'; connect-src 'none'"
+  },
+  "source": "https://github.com/gentropic/auditable (ext/lamina + tools/lamina)",
+  "license": "MIT"
+}

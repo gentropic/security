@@ -1,0 +1,10 @@
+{
+  "_note": "CycloneDX SBOM is emitted by the auditable build per lamina release. This placeholder shows the intended shape; the real SBOM is build-emitted and hash-pinned.",
+  "bomFormat": "CycloneDX",
+  "specVersion": "1.5",
+  "metadata": {
+    "component": { "type": "application", "name": "lamina", "version": "<build-emitted>" }
+  },
+  "components": [],
+  "_runtime_dependencies": "none"
+}

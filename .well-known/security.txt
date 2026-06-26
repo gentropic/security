@@ -1,0 +1,8 @@
+# Security contact for the GCU (gentropic.org) — RFC 9116.
+# Canonical location is the domain root (gentropic.org/.well-known/security.txt);
+# this copy serves the /security wing until the root copy is placed in gentropic.github.io.
+Contact: mailto:endarthur@gmail.com
+Expires: 2027-06-25T00:00:00.000Z
+Preferred-Languages: en, pt-BR
+Canonical: https://gentropic.org/security/.well-known/security.txt
+Policy: https://gentropic.org/security

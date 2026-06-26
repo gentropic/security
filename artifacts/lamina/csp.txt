@@ -1,0 +1,12 @@
+# The Content-Security-Policy lamina (hardened profile) is built to run under.
+# Representative; the exact pinned policy is emitted by the auditable build per release.
+# Tighten further if your environment requires — it still works.
+
+default-src 'self';
+script-src 'self';
+connect-src 'none';
+img-src 'self' data: blob:;
+font-src 'self';
+worker-src 'self' blob:;
+object-src 'none';
+base-uri 'none'
