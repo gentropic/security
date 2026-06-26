@@ -125,8 +125,45 @@
   </section>
 
   <section>
+    <h2>Profiles</h2>
+    <p>Each tool declares the strictest profile it meets. The profile is set by the two axes a reviewer
+      weighs first — whether the tool generates code at runtime, and whether it reaches the network:</p>
+    <table>
+      <tr><th>Profile</th><th>Runtime codegen</th><th>Network / reach</th></tr>
+      <tr><td><strong>Sealed</strong></td><td><span class="no">None</span></td><td><span class="no">None</span> — survives the strictest CSP and Trusted Types; air-gapped, and demonstrably so (disconnect and run)</td></tr>
+      <tr><td><strong>Connected</strong></td><td><span class="no">None</span></td><td>A declared set of endpoints — codegen-free, but not air-gapped</td></tr>
+      <tr><td><strong>Full</strong></td><td>uses <code>eval</code> / <code>Function</code></td><td>The full-power build, for environments that permit runtime codegen</td></tr>
+    </table>
+    <p>Two capabilities are declared <em>orthogonally</em>, as flags on the profile, because they change
+      neither the codegen nor the network story:</p>
+    <table>
+      <tr><th>+WASM</th><td>Uses WebAssembly (needs <code>wasm-unsafe-eval</code>) for heavy computation.</td></tr>
+      <tr><th>+GPU</th><td>Uses WebGL / WebGPU. <strong>Not governed by CSP</strong> — shaders are compiled by the GPU driver, not by <code>eval</code>, so this does not break a Sealed profile. May be disabled by browser policy, and adds GPU-process attack surface (mitigated by the browser's GPU sandbox).</td></tr>
+    </table>
+    <p>A <em>served</em> secure origin (an intranet HTTPS site, or a loopback server) is required only by
+      tools that use <strong>service workers</strong> for offline caching, or that rely on
+      <strong><code>crypto.subtle</code></strong> for self-hash-verification — both of which are unreliable
+      from a <code>file://</code> origin. Everything else, a Sealed&nbsp;+GPU tool included, runs as a single
+      file opened off disk. (A <code>file://</code> page <em>is</em> a secure context; its opaque origin,
+      not the secure-context gate, is what limits those two features.)</p>
+  </section>
+
+  <section>
+    <h2>How each guarantee is established</h2>
+    <p>Not every property on this page is backed the same way, and the difference is the point. Each claim is
+      established in one of these ways — strongest first — and a tool's declaration marks which:</p>
+    <table>
+      <tr><th>Host-enforced</th><td>The browser's own policy makes it <em>impossible</em>, not merely absent — "no codegen" under a <code>script-src</code> without <code>unsafe-eval</code>; "no network" under <code>connect-src 'none'</code>. A flawed build cannot violate a host-enforced limit. This is the strongest kind, and it is genuinely available here.</td></tr>
+      <tr><th>Demonstrable</th><td>You can observe it directly — disconnect the network and the tool still works.</td></tr>
+      <tr><th>Inspectable</th><td>You can read it in the source, and the published hash confirms the source is what runs — for instance, "reads only files you open."</td></tr>
+      <tr><th>Best-effort</th><td>Intended and believed, but neither host-enforced nor directly testable. Where a property rests only on this, the declaration says so plainly.</td></tr>
+    </table>
+  </section>
+
+  <section>
     <h2>lamina — capability declaration</h2>
-    <p>lamina is the first tool we publish with a hardened profile, and a sensible one to evaluate first. It
+    <p>lamina is the first tool we publish, and a sensible one to evaluate first: it meets the strictest
+      profile, <strong>Sealed</strong>. It
       opens a file — even a multi-gigabyte one — and lets you scroll, filter, and export it: windowed and
       read-only over the source, and running entirely offline. Its capability declaration is set out below,
       and the machine-readable forms your own tooling can ingest are linked here —
@@ -134,6 +171,7 @@
       <a href="artifacts/lamina/csp.txt">csp.txt</a>, and
       <a href="artifacts/lamina/sbom.json">sbom.json</a>.</p>
     <table>
+      <tr><th>Profile</th><td><strong>Sealed</strong> — no runtime codegen, no network, no WASM, no GPU</td></tr>
       <tr><th>Executes</th><td>runtime codegen <span class="no">No</span> (no <code>eval</code> / <code>new Function</code>) · wasm <span class="no">No</span> · remote import <span class="no">No</span></td></tr>
       <tr><th>Reach</th><td>network <span class="no">None</span> (<code>connect-src 'none'</code>) · telemetry <span class="no">None</span></td></tr>
       <tr><th>Filesystem</th><td>reads — <strong>user-opened files only</strong> (picker / drag-drop) · writes — <strong>user-initiated export only, to a path you choose in the OS Save dialog</strong> · silent or arbitrary I/O <span class="no">None</span></td></tr>

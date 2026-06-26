@@ -1,7 +1,8 @@
 {
   "tool": "lamina",
   "summary": "Open any file — even multi-gigabyte — and scroll / filter / export it. Windowed, read-only over the source, offline.",
-  "profile": "hardened",
+  "profile": "Sealed",
+  "flags": [],
   "version": "<release tag — build-emitted>",
   "sha256": "<build-emitted>",
   "doi": "<zenodo — on first frozen release>",
