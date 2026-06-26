@@ -2,7 +2,7 @@
 <!--
   gentropic.org/security — ala de segurança da GCU (pt-BR).
   Deliberadamente austera: switchboard apenas CLARO, estática, SEM scripts, SEM requisições de rede,
-  fontes embutidas na mesma origem (sem CDN). Esta página é, ela mesma, um artefato estático endurecido —
+  fontes embutidas na mesma origem (sem CDN). Esta página é, ela mesma, um artefato estático hardened —
   cumpre a declaração de capacidades que descreve. Exiba o código-fonte; é esse o ponto.
 -->
 <html lang="pt-BR">
@@ -101,13 +101,13 @@
       organização depende) e passaram a policiar o <strong>alcance</strong>. Veja exatamente o que cada
       controle bloqueia, e a resposta do perfil endurecido:</p>
     <table>
-      <tr><th>Controle do host</th><th>Bloqueia</th><th>Perfil endurecido</th></tr>
+      <tr><th>Controle do host</th><th>Bloqueia</th><th>Perfil hardened</th></tr>
       <tr><td><code>unsafe-eval</code> (CSP)</td><td><code>eval</code> / <code>new&nbsp;Function</code></td><td><span class="yes">Zero geração de código em runtime</span> — backend de closures, nunca eval</td></tr>
       <tr><td><code>wasm-unsafe-eval</code></td><td>compilação de WASM</td><td>Removido (ou habilitável por admin)</td></tr>
       <tr><td><code>import()</code> remoto</td><td>código remoto</td><td>Apenas imports empacotados / locais</td></tr>
       <tr><td>Trusted Types</td><td>construção de Function</td><td><span class="yes">Igual — sem geração de código</span></td></tr>
       <tr><td>origem segura</td><td><code>crypto.subtle</code>, workers, armazenamento</td><td>Servida de uma origem HTTPS interna / loopback</td></tr>
-      <tr><td><code>connect-src 'none'</code></td><td>saída de rede</td><td><span class="yes">Alcance zero por construção</span> — o isolamento da rede é o recurso</td></tr>
+      <tr><td><code>connect-src 'none'</code></td><td>saída de rede</td><td><span class="yes">Alcance zero por construção</span> — o air-gap é o recurso</td></tr>
     </table>
   </section>
 
@@ -118,8 +118,8 @@
       <em>(Os nomes dos perfis são canônicos, em inglês, como as chaves do <code>capability.json</code>.)</em></p>
     <table>
       <tr><th>Perfil</th><th>Geração de código (runtime)</th><th>Rede / alcance</th></tr>
-      <tr><td><strong>Sealed</strong></td><td><span class="no">Nenhuma</span></td><td><span class="no">Nenhum</span> — sobrevive à CSP mais estrita e ao Trusted Types; isolado da rede, e de forma demonstrável (desconecte e rode)</td></tr>
-      <tr><td><strong>Connected</strong></td><td><span class="no">Nenhuma</span></td><td>Um conjunto declarado de endpoints — sem geração de código, mas não isolado da rede</td></tr>
+      <tr><td><strong>Sealed</strong></td><td><span class="no">Nenhuma</span></td><td><span class="no">Nenhum</span> — sobrevive à CSP mais estrita e ao Trusted Types; air-gapped, e de forma demonstrável (desconecte e rode)</td></tr>
+      <tr><td><strong>Connected</strong></td><td><span class="no">Nenhuma</span></td><td>Um conjunto declarado de endpoints — sem geração de código, mas não air-gapped</td></tr>
       <tr><td><strong>Full</strong></td><td>usa <code>eval</code> / <code>Function</code></td><td>A versão de potência total, para ambientes que permitem geração de código em runtime</td></tr>
     </table>
     <p>Duas capacidades são declaradas de forma <em>ortogonal</em>, como flags sobre o perfil, porque não
@@ -188,7 +188,7 @@
     <p>Uma vez que você deixa de confiar nas extensões de arquivo como indicador de capacidade, restam dois
       modelos coerentes de governança — e um artefato da GCU responde a ambos, por construção:</p>
     <table>
-      <tr><th>Governar a fronteira</th><td>presuma computação arbitrária, controle o alcance &rarr; <span class="yes">isolado da rede</span>, <code>connect-src 'none'</code>, alcance voluntariamente zero — <em>e demonstrável: puxe o cabo.</em></td></tr>
+      <tr><th>Governar a fronteira</th><td>presuma computação arbitrária, controle o alcance &rarr; <span class="yes">air-gapped</span>, <code>connect-src 'none'</code>, alcance voluntariamente zero — <em>e demonstrável: puxe o cabo.</em></td></tr>
       <tr><th>Governar a procedência</th><td>identidade + integridade &rarr; <span class="yes">fixado por hash</span>, congelado, auditável sob CC0 — "isto é a coisa revisada, inalterada".</td></tr>
     </table>
   </section>
@@ -222,7 +222,7 @@
       desconfiaríamos de quem vendesse. Uma revisão de segurança é uma avaliação com escopo definido, e a
       decisão de aceitar o risco residual pertence à sua organização — não a nós, e não a um relatório que nós
       tenhamos encomendado. O que podemos oferecer é tudo de que você precisa para tomar essa decisão bem.</p>
-    <p>Não é <strong>software instalado fantasiado.</strong> Independentemente de como um artefato é
+    <p>Não é <strong>software instalado disfarçado.</strong> Independentemente de como um artefato é
       empacotado — como arquivo, atalho ou instalador — o que de fato roda é HTML no seu navegador gerenciado,
       sob a sua política de segurança de conteúdo. O empacotamento muda como a ferramenta é descoberta e
       inventariada; não muda o que executa, nem onde.</p>
