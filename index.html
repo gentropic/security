@@ -103,8 +103,8 @@
     <p>You do not have to take any of the following on faith. Each property claimed on this page corresponds
       to something you can confirm directly, in a few minutes, using tools you already have on the machine.</p>
     <ol class="verify">
-      <li>Download <code>lamina.html</code> from the pinned release below.</li>
-      <li>Hash it — <kbd>shasum -a 256 lamina.html</kbd> — it matches the published SHA-256 <em>and</em> the Zenodo DOI.</li>
+      <li>Download the pinned build — <code>lamina-0.1.0.html</code> — from the provenance table below.</li>
+      <li>Hash it — <kbd>shasum -a 256 lamina-0.1.0.html</kbd> — it matches the published SHA-256 below.</li>
       <li>Open it. DevTools &rarr; Network &rarr; load a file &rarr; <strong>zero requests.</strong></li>
       <li>View Source — it is readable; here is the repository it is built from.</li>
       <li>Disconnect the network entirely. It still works.</li>
@@ -186,14 +186,14 @@
   <section>
     <h2>Is this the reviewed thing, unchanged?</h2>
     <p>Integrity rests on a single, checkable chain from source to running file: an organisation-owned
-      repository with full history, a signed and tagged release, the SHA-256 of the built artifact, and a
-      <strong>Zenodo DOI</strong> that freezes that exact version as a citable, CERN-hosted record. Taken
-      together, they let you establish that the file you reviewed, the file that is running, and the file
-      bearing this hash are one and the same.</p>
+      repository with full history, a frozen, hash-pinned build, and the SHA-256 of that exact artifact —
+      published below and reproducible from source. (A <strong>Zenodo DOI</strong>, freezing a release as a
+      citable, CERN-hosted record, is planned for a tagged release.) Taken together, they let you establish
+      that the file you reviewed, the file that is running, and the file bearing this hash are one and the same.</p>
     <table>
-      <tr><th>Release</th><td class="ph">&lt;tag — build-emitted&gt;</td></tr>
-      <tr><th>SHA-256</th><td class="ph">&lt;hash — build-emitted&gt;</td></tr>
-      <tr><th>Zenodo DOI</th><td class="ph">&lt;doi — on first frozen release&gt;</td></tr>
+      <tr><th>Release</th><td>lamina 0.1.0 — 2026-06-29 (build bae68bc) · <a href="https://gentropic.org/lamina/lamina-0.1.0.html" download>download the pinned build</a></td></tr>
+      <tr><th>SHA-256</th><td><code>ee6f058027d5e05e651a46d7f32c891b31d8a7808a46daa97b2f8cc00f9b90d6</code></td></tr>
+      <tr><th>Zenodo DOI</th><td class="ph">planned — the pinned build + SHA-256 above are the integrity anchor today</td></tr>
       <tr><th>Source</th><td><a href="https://github.com/gentropic/auditable">github.com/gentropic/auditable</a> (<code>ext/lamina</code> + <code>tools/lamina</code>)</td></tr>
     </table>
   </section>
@@ -214,6 +214,7 @@
       <li><a href="artifacts/lamina/capability.json">capability.json</a> — machine-readable capability declaration</li>
       <li><a href="artifacts/lamina/csp.txt">csp.txt</a> — the exact CSP the artifact is built to run under</li>
       <li><a href="artifacts/lamina/sbom.json">sbom.json</a> — CycloneDX SBOM (zero runtime dependencies, stated in your scanner's format)</li>
+      <li><a href="artifacts/lamina/sha256.txt">sha256.txt</a> — SHA-256 of the pinned build</li>
       <li><a href=".well-known/security.txt">.well-known/security.txt</a> — RFC 9116 contact + policy</li>
     </ul>
   </section>

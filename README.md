@@ -17,9 +17,9 @@ describes. *View source; that's the point.*
 - `fonts/` — vendored Barlow + Space Mono (OFL).
 
 ## Build-emitted values
-Hashes, the SBOM, the pinned CSP, the release tag, and the Zenodo DOI are emitted by the **source build**
-(the `auditable` repo, for lamina) and slotted in per release — they appear as marked placeholders until
-then.
+Hashes, the SBOM, the pinned CSP, and the release tag are emitted by the **source build** (the `auditable`
+repo, for lamina) and slotted in per release — they appear as marked placeholders until then. A Zenodo DOI
+(minted separately, when a release is frozen as a citable record) is planned, not yet issued.
 
 ## Scope — the inter-trench wall
 This wing presents the **GCU-generic** capability + verification story. **No client / employer specifics**

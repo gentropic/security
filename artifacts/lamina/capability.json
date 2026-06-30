@@ -1,10 +1,10 @@
 {
   "tool": "lamina",
-  "summary": "Open any file — even multi-gigabyte — and scroll / filter / export it. Windowed, read-only over the source, offline.",
+  "summary": "Open any file — even multi-gigabyte — and scroll / filter / derive / export it. Windowed, read-only over the source, offline.",
   "profile": "Sealed",
   "flags": [],
-  "version": "<release tag — build-emitted>",
-  "sha256": "<build-emitted>",
+  "version": "0.1.0",
+  "sha256": "ee6f058027d5e05e651a46d7f32c891b31d8a7808a46daa97b2f8cc00f9b90d6",
   "doi": "<zenodo — on first frozen release>",
   "executes": {
     "runtime_codegen": false,
@@ -16,16 +16,37 @@
     "telemetry": false
   },
   "filesystem": {
-    "reads": "user-opened files only (picker / drag-drop)",
+    "reads": "user-opened files only (picker / drag-drop / a recent, which re-grants permission)",
     "writes": "user-initiated export only, to a user-chosen path (OS Save dialog)",
-    "silent_or_arbitrary_io": false
+    "silent_or_arbitrary_io": false,
+    "local_state": "block-index cache + an optional recents list (file handles + names) in IndexedDB — local only, never transmitted; reopening a recent re-grants permission (no silent re-read); clearable + disableable"
   },
   "host_needs": {
     "secure_origin": true,
     "admin": false,
     "install": false,
-    "csp": "default-src 'self'; script-src 'self'; connect-src 'none'"
+    "csp": "default-src 'none'; script-src 'self' 'unsafe-inline' blob:; style-src 'unsafe-inline'; img-src data:; worker-src 'self' blob:; child-src 'self' blob:; manifest-src 'self'; connect-src 'none'; base-uri 'none'; form-action 'none'"
   },
+  "third_party": [
+    {
+      "name": "fflate",
+      "license": "MIT",
+      "copyright": "© Arjun Barrett",
+      "use": "zip/gz decode (via @gcu/archive)"
+    },
+    {
+      "name": "fzstd",
+      "license": "MIT",
+      "copyright": "© Arjun Barrett",
+      "use": "zstd decode"
+    },
+    {
+      "name": "seek-bzip",
+      "license": "MIT",
+      "copyright": "© C. Scott Ananian",
+      "use": "bzip2 decode"
+    }
+  ],
   "source": "https://github.com/gentropic/auditable (ext/lamina + tools/lamina)",
   "license": "MIT"
 }
